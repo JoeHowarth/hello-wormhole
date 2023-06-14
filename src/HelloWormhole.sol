@@ -17,9 +17,14 @@ contract HelloWormhole is IWormholeReceiver {
         wormholeRelayer = IWormholeRelayer(_wormholeRelayer);
     }
 
+    /**
+     * @notice Returns the cost (in wei) of a greeting
+     */
     function quoteCrossChainGreeting(
         uint16 targetChain
     ) public view returns (uint256 cost) {
+        // Cost of requesting a message to be sent to
+        // chain 'targetChain' with a gasLimit of 'GAS_LIMIT'
         (cost, ) = wormholeRelayer.quoteEVMDeliveryPrice(
             targetChain,
             0,
@@ -27,6 +32,12 @@ contract HelloWormhole is IWormholeReceiver {
         );
     }
 
+    /**
+     * @notice Updates the list of 'greetings' 
+     * and emits a 'GreetingReceived' event with 'greeting'
+     * on the HelloWormhole contract at 
+     * chain 'targetChain' and address 'targetAddress'
+     */
     function sendCrossChainGreeting(
         uint16 targetChain,
         address targetAddress,
@@ -48,6 +59,10 @@ contract HelloWormhole is IWormholeReceiver {
         }
     }
 
+    /**
+     * @notice Endpoint that the Wormhole Relayer contract will call
+     * to deliver the greeting
+     */
     function receiveWormholeMessages(
         bytes memory payload,
         bytes[] memory, // additionalVaas
@@ -73,3 +88,7 @@ function fromWormholeFormat(bytes32 whFormatAddress) pure returns (address) {
         revert NotAnEvmAddress(whFormatAddress);
     return address(uint160(uint256(whFormatAddress)));
 }
+  
+  
+        
+   
